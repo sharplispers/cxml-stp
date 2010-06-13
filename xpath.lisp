@@ -191,11 +191,13 @@
 (defun normalize-text-nodes! (node)
   (when (typep node 'stp:parent-node)
     (let ((children (%children node)))
-      (when (loop
-	       for child across children
-	       for a = nil then b
-	       for b = (typep child 'text)
-	       thereis (and b (or a (zerop (length (stp:data child))))))
+      (when (and children (loop
+			     for child across children
+			     for a = nil then b
+			     for b = (typep child 'text)
+			     thereis
+			       (and b (or a
+					  (zerop (length (stp:data child)))))))
 	(let ((previous nil)
 	      (results '()))
 	  (stp:do-children (child node)
