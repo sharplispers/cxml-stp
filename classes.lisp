@@ -87,6 +87,7 @@
     @see-slot{public-id}
     @see-slot{internal-subset}"))
 (setf (find-class 'document-type) (find-class 'cxml-stp:document-type))
+(deftype document-type () 'cxml-stp:document-type)
 
 (defclass cxml-stp:document (parent-node) ()
   (:documentation
@@ -101,6 +102,7 @@
     @see-slot{document-element}
     @see-slot{document-type}"))
 (setf (find-class 'document) (find-class 'cxml-stp:document))
+(deftype document () (find-class 'cxml-stp:document))
 
 (defclass element (parent-node named-node-mixin)
   ((attributes :initform nil :accessor %attributes)
