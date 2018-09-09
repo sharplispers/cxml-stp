@@ -311,6 +311,6 @@
   (stp:target node))
 
 (defun run-xpath-tests ()
-  (let ((xpath::*dom-builder* (stp:make-builder))
-	(xpath::*document-element* #'stp:document-element))
-    (xpath::run-all-tests)))
+  (let ((xpath-test:*dom-builder* (stp:make-builder))
+	(xpath-test:*document-element* #'stp:document-element))
+    (xpath-test::run-all-tests)))
