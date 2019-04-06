@@ -301,14 +301,12 @@
                     (destructuring-bind (var name &optional (uri ""))
                        (if (and (listp entry) (cdr entry))
                             entry
-                            (list entry (coerce
-                                         (string-downcase
-					  (princ-to-string
-					   (symbol-name entry)))
-                                         'runes:simple-rod)))
+                            (list entry (coerce (string-downcase entry)
+                                                'runes:simple-rod)))
                       `(,var (attribute-value ,element ,name ,uri))))
                   entries)
         ,@body)))
+
 (defun list-attributes (element)
   "@arg[element]{an @class{element}}
    @return{a list of @class{attribute} nodes}
