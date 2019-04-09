@@ -29,11 +29,12 @@
      (:file "text")
      (:file "builder")
      (:file "xpath"))
-    :depends-on (:cxml :alexandria :xpath :xpath/test))
+    :depends-on (:cxml :alexandria :xpath))
 
 (defsystem :cxml-stp-test
     :default-component-class closure-source-file
     :serial t
-    :components
-    ((:file "test"))
-    :depends-on (:cxml-stp :rt))
+    :components ((:module "test"
+                  :components ((:file "test")
+                               (:file "xpath"))))
+    :depends-on (:cxml-stp :rt :xpath/test))
