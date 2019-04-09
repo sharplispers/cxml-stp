@@ -29,7 +29,8 @@
      (:file "text")
      (:file "builder")
      (:file "xpath"))
-    :depends-on ("cxml" "alexandria" "xpath"))
+    :depends-on ("cxml" "alexandria" "xpath")
+    :in-order-to ((test-op (test-op "cxml-stp/test"))))
 
 (defsystem "cxml-stp/test"
     :default-component-class closure-source-file
@@ -37,4 +38,7 @@
     :components ((:module "test"
                   :components ((:file "test")
                                (:file "xpath"))))
-    :depends-on ("cxml-stp" "rt" "xpath/test"))
+    :depends-on ("cxml-stp" "rt" "xpath/test")
+    :perform (test-op (operation component)
+               (uiop:symbol-call '#:cxml-stp-test '#:do-tests)
+               (uiop:symbol-call '#:cxml-stp-test '#:run-xpath-tests)))
