@@ -1,6 +1,6 @@
-(defpackage :cxml-stp-system
-  (:use :asdf :cl))
-(in-package :cxml-stp-system)
+(cl:defpackage #:cxml-stp-system
+  (:use #:asdf #:cl))
+(cl:in-package #:cxml-stp-system)
 
 (defclass closure-source-file (cl-source-file) ())
 
@@ -11,7 +11,7 @@
     (let ((*compile-print* nil))
       (call-next-method))))
 
-(defsystem :cxml-stp
+(defsystem "cxml-stp"
     :default-component-class closure-source-file
     :serial t
     :components
@@ -29,11 +29,16 @@
      (:file "text")
      (:file "builder")
      (:file "xpath"))
-    :depends-on (:cxml :alexandria :xpath :xpath/test))
+    :depends-on ("cxml" "alexandria" "xpath")
+    :in-order-to ((test-op (test-op "cxml-stp/test"))))
 
-(defsystem :cxml-stp-test
+(defsystem "cxml-stp/test"
     :default-component-class closure-source-file
     :serial t
-    :components
-    ((:file "test"))
-    :depends-on (:cxml-stp :rt))
+    :components ((:module "test"
+                  :components ((:file "test")
+                               (:file "xpath"))))
+    :depends-on ("cxml-stp" "rt" "xpath/test")
+    :perform (test-op (operation component)
+               (uiop:symbol-call '#:cxml-stp-test '#:do-tests)
+               (uiop:symbol-call '#:cxml-stp-test '#:run-xpath-tests)))

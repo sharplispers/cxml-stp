@@ -309,8 +309,3 @@
 (define-default-method xpath-protocol:processing-instruction-target
     ((node stp:processing-instruction))
   (stp:target node))
-
-(defun run-xpath-tests ()
-  (let ((xpath-test:*dom-builder* (stp:make-builder))
-	(xpath-test:*document-element* #'stp:document-element))
-    (xpath-test::run-all-tests)))
