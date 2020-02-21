@@ -205,7 +205,7 @@
     (setf (%parent attribute) element)))
 
 (defun %add-attribute (attribute element)
-  (push attribute (%attributes element)))
+  (alexandria:appendf (%attributes element) (list attribute)))
 
 (defun %remove-attribute (attribute)
   (alexandria:deletef (%attributes (parent attribute)) attribute)

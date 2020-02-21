@@ -623,7 +623,7 @@
 ;; (deftest doctype.setf.internal-subset.4
 ;;     (let ((doctype (make-document-type "root")))
 ;;       (setf (internal-subset doctype)
-;; 	    #1="<!ENTITY % test SYSTEM 'http://www.example.com/notexists.dtd'>
+;;          #1="<!ENTITY % test SYSTEM 'http://www.example.com/notexists.dtd'>
 ;; %test;\n")
 ;;       (internal-subset doctype))
 ;;   #1#)
@@ -1246,7 +1246,7 @@
 				     "zzz:zzz"
 				     "http://www.example.org"))
       (serialize-to-string element))
-  "<test xmlns:zzz=\"http://www.example.org\" zzz:zzz=\"preserve\" xml:space=\"preserve\"/>")
+  "<test xmlns:zzz=\"http://www.example.org\" xml:space=\"preserve\" zzz:zzz=\"preserve\"/>")
 
 (deftest element.xml-prefix
     (let ((element (make-element "xml:test"
@@ -1361,7 +1361,7 @@
       (assert-equal (local-name e) "sakjdhjhd")
       (dolist (x '("dude" "digits__" "digits1234" "digits-z"))
 	(assert-equal x (setf (local-name e) x))
-	(assert-equal (local-name e) x)) 
+	(assert-equal (local-name e) x))
       (expect-condition (setf (local-name e) "spaces ") stp-error)
       (expect-condition (setf (local-name e) "digits:test") stp-error)
       (expect-condition (setf (local-name e) "digits!test") stp-error)
@@ -1377,7 +1377,7 @@
       (assert-equal (namespace-prefix e) "red")
       (dolist (x '("dude" "digits__" "digits1234" "digits-z" ""))
 	(assert-equal x (setf (namespace-prefix e) x))
-	(assert-equal (namespace-prefix e) x)) 
+	(assert-equal (namespace-prefix e) x))
       (dolist (y '("spaces "
 		   "digits:test"
 		   "digits!test"
@@ -1490,7 +1490,7 @@
 	   (element (make-element name uri)))
       (add-extra-namespace element "xmlns" "")
       (remove-extra-namespace element "xmlns")
-      (expect-condition 
+      (expect-condition
        (add-extra-namespace element "xmlns" "http://foo")
        stp-error)
       (values)))
@@ -1503,7 +1503,7 @@
 			   "xml"
 			   "http://www.w3.org/XML/1998/namespace")
       (remove-extra-namespace element "xml")
-      (expect-condition 
+      (expect-condition
        (add-extra-namespace element
 			    "foo"
 			    "http://www.w3.org/XML/1998/namespace")
@@ -1639,7 +1639,7 @@
       (add-extra-namespace element "pre" "http://www.example.com")
       (let ((a1 (make-attribute "values" "name"))
 	    (a2 (make-attribute "simple"
-				"xlink:type" 
+				"xlink:type"
 				"http://www.w3.org/TR/1999/xlink")))
 	(add-attribute element a1)
 	(add-attribute element a2)
@@ -2163,7 +2163,7 @@
       (add-attribute e (make-attribute "'" "a4"))
       (add-attribute e (make-attribute "&" "a5"))
       (serialize-to-string e))
-  "<test a5=\"&amp;\" a4=\"'\" a3=\"&quot;\" a2=\"&gt;\" a1=\"&lt;\"/>")
+  "<test a1=\"&lt;\" a2=\"&gt;\" a3=\"&quot;\" a4=\"'\" a5=\"&amp;\"/>")
 
 (deftest attribute.serialize.2
     (let ((e (make-element "test")))
@@ -2172,13 +2172,13 @@
       (add-attribute e (make-attribute (string (code-char 13)) "a3"))
       (add-attribute e (make-attribute (string (code-char 9)) "a4"))
       (serialize-to-string e))
-  "<test a4=\"&#9;\" a3=\"&#13;\" a2=\"&#10;\" a1=\" \"/>")
+  "<test a1=\" \" a2=\"&#10;\" a3=\"&#13;\" a4=\"&#9;\"/>")
 
 (deftest attribute.serialize.3
     (let ((e (make-element "test")))
       (add-attribute e (make-attribute "=,.!@#$%^*()_-'[]{}+/?;:`|\\" "a"))
       (serialize-to-string e))
-"<test a=\"=,.!@#$%^*()_-'[]{}+/?;:`|\\\"/>")
+  "<test a=\"=,.!@#$%^*()_-'[]{}+/?;:`|\\\"/>")
 
 (deftest attribute.setf.value
     (let ((a (make-attribute "test" "test")))
@@ -2187,7 +2187,7 @@
 		       "  spaces on both ends  "
 		       " quotes \" \" quotes"
 		       " single \'\' quotes"
-		       " both double and single \"\'\"\' quotes" 
+		       " both double and single \"\'\"\' quotes"
 		       " angle brackets <  > <<<"
 		       " carriage returns \r\r\r"
 		       " ampersands & &&& &name; "))
