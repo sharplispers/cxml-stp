@@ -1510,9 +1510,12 @@
 
 (deftest element.add-extra-namespace.4
     (let* ((name "red:sakjdhjhd")
-	   (uri "http://www.red.com/")
-	   (element (make-element name uri)))
-      (expect-condition (add-extra-namespace element "foo" "hoppla") warning)
+           (uri "http://www.red.com/")
+           (element (make-element name uri)))
+      (expect-condition
+       (let ((*check-uri-syntax* t))
+         (add-extra-namespace element "foo" "hoppla"))
+       warning)
       (values)))
 
 (deftest element.add-extra-namespace.5
