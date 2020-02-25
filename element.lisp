@@ -68,21 +68,30 @@
     @return{the value}
     @short{Sets the attribute's value.}"))
 
+(declaim (inline ensure-rod))
+(defun ensure-rod (string)
+  (typecase string
+    (base-string
+     (coerce string 'runes:rod))
+    (runes:rod
+     string)
+    (t
+     (error 'type-error :datum string
+                        :expected-type '(or runes:rod
+                                            base-string)))))
 
 (defun make-element (name &optional (uri ""))
   "@arg[name]{string, a QName or NCName}
    @arg[uri]{a string, the namespace URI}
    @return{an @class{element}}
    @short{This function creates an element node of the given name.}"
-  (check-type name runes:rod)
-  (let ((result (make-instance 'element)))
-    (multiple-value-bind (prefix local-name)
-	(cxml::split-qname name)
-      (setf prefix (or prefix ""))
-      (setf (namespace-prefix result) prefix)
-      (setf (namespace-uri result) uri)
-      (setf (local-name result) local-name))
-    result))
+  (multiple-value-bind (prefix local-name)
+      (cxml::split-qname (ensure-rod name))
+    (let ((result (make-instance 'element)))
+      (setf (namespace-prefix result) (or prefix "")
+            (namespace-uri result)    uri
+            (local-name result)       local-name)
+      result)))
 
 (defmethod copy ((node element))
   (let ((result (make-instance 'element)))
@@ -227,8 +236,8 @@
 
 (defun find-attribute-named (element name &optional (uri ""))
   "@arg[element]{an instance of @class{element}}
-   @arg[name]{string, an NCName} 
-   @arg[uri]{string, a namespace URI} 
+   @arg[name]{string, an NCName}
+   @arg[uri]{string, a namespace URI}
    @return{an @class{attribute} or nil}
    @short{Searches for an attribute node of @code{element} with the
      specified local name and namespace URI and returns it.}
@@ -260,8 +269,8 @@
 
 (defun attribute-value (element name &optional (uri "" urip))
   "@arg[element]{an instance of @class{element}}
-   @arg[name]{string, an NCName} 
-   @arg[uri]{string, a namespace URI} 
+   @arg[name]{string, an NCName}
+   @arg[uri]{string, a namespace URI}
    @return{a string or nil}
    @short{Searches for an attribute node of @code{element} with the
      specified local name and namespace URI and returns its value.}
@@ -492,10 +501,10 @@
 ;;   (setf end2 (or end2 (length seq)))
 ;;   (cond
 ;;     ((and (eql (- start1 end1) (length (%children parent)))
-;; 	  (eql start2 end2))
+;;        (eql start2 end2))
 ;;       (do-children (loser parent)
-;; 	(fill-in-base-uri loser)
-;; 	(setf (%parent loser) nil))
+;;      (fill-in-base-uri loser)
+;;      (setf (%parent loser) nil))
 ;;       (setf (fill-pointer (%children parent)) 0))
 ;;     (t
 ;;      (call-next-method)))
@@ -581,12 +590,12 @@
 		   (unless (or (equal upper uri)
 			       (and (null upper) (zerop (length uri))))
 		     (push (if (plusp (length prefix))
-			       (sax:make-attribute 
+			       (sax:make-attribute
 				:namespace-uri "http://www.w3.org/2000/xmlns/"
 				:local-name prefix
 				:qname (concatenate 'string "xmlns:" prefix)
 				:value uri)
-			       (sax:make-attribute 
+			       (sax:make-attribute
 				:namespace-uri "http://www.w3.org/2000/xmlns/"
 				:local-name "xmlns"
 				:qname "xmlns"

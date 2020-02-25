@@ -1753,11 +1753,10 @@
 (deftest element.copy.7
     (let* ((top (make-element "e"))
 	   (parent top))
-      (loop
-	 for parent = top then child
-	 for i from 0 below 100
-	 for child = (make-element (format nil "e~D" i))
-	 do (append-child parent child))
+      (loop for parent = top then child
+	    for i from 0 below 100
+	    for child = (make-element (format nil "e~D" i))
+	    do (append-child parent child))
       (assert-node= top (copy top))
       (values)))
 
