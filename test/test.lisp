@@ -2011,14 +2011,13 @@
 
 (deftest element.base-uri
     (let* ((root (make-element "root"))
-	   (child (make-element "child"))
-	   (document (make-document root)))
+           (child (make-element "child"))
+           (document (make-document root)))
       (append-child root child)
       (assert-equal (base-uri document) "")
       (setf (base-uri root) "file://etc")
       (setf (base-uri child) "passwd")
-      (assert (puri:uri= (puri:parse-uri "file://etc/passwd")
-			 (base-uri child)))
+      (assert (string= "file://etc/passwd" (base-uri child)))
       (values)))
 
 (deftest element.root
