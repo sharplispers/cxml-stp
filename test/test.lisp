@@ -186,27 +186,25 @@
 
 (deftest text.serialize
     (let ((text (make-text "name"))
-	  (pairs '("Hello"
-		   "hello there"
-		   "  spaces on both ends  "
-		   ;; zzz CXML traditionally escapes quotes without good
-		   ;; reason:
-		   (" quotes \" \" quotes"
-		    " quotes &quot; &quot; quotes")
-		   (" both double and single \"\'\"\' quotes"
-		    " both double and single &quot;\'&quot;\' quotes")
-		   " single \'\' quotes"
-		   ("<>" "&lt;&gt;")
-		   ("&amp;" "&amp;amp;")
-		   ("]]>" "]]&gt;")
-		   (#.(string (code-char 13)) "&#13;")
-		   "=,.!@#$%^*()_-'[]{}+/?;:`|\\")))
+          (pairs '("Hello"
+                   "hello there"
+                   "  spaces on both ends  "
+                   (" quotes \" \" quotes"
+                    " quotes \" \" quotes")
+                   (" both double and single \"\'\"\' quotes"
+                    " both double and single \"\'\"\' quotes")
+                   " single \'\' quotes"
+                   ("<>" "&lt;&gt;")
+                   ("&amp;" "&amp;amp;")
+                   ("]]>" "]]&gt;")
+                   (#.(string (code-char 13)) "&#13;")
+                   "=,.!@#$%^*()_-'[]{}+/?;:`|\\")))
       (loop
-	 for (in out) in (mapcar (lambda (x) (if (listp x) x (list x x)))
-				 pairs)
-	 do
-	   (setf (data text) in)
-	   (assert-equal (serialize-to-string text) out))
+         for (in out) in (mapcar (lambda (x) (if (listp x) x (list x x)))
+                                 pairs)
+         do
+           (setf (data text) in)
+           (assert-equal (serialize-to-string text) out))
       (values)))
 
 (deftest text.copy
@@ -1512,9 +1510,12 @@
 
 (deftest element.add-extra-namespace.4
     (let* ((name "red:sakjdhjhd")
-	   (uri "http://www.red.com/")
-	   (element (make-element name uri)))
-      (expect-condition (add-extra-namespace element "foo" "hoppla") warning)
+           (uri "http://www.red.com/")
+           (element (make-element name uri)))
+      (expect-condition
+       (let ((*check-uri-syntax* t))
+         (add-extra-namespace element "foo" "hoppla"))
+       warning)
       (values)))
 
 (deftest element.add-extra-namespace.5
@@ -1755,11 +1756,10 @@
 (deftest element.copy.7
     (let* ((top (make-element "e"))
 	   (parent top))
-      (loop
-	 for parent = top then child
-	 for i from 0 below 100
-	 for child = (make-element (format nil "e~D" i))
-	 do (append-child parent child))
+      (loop for parent = top then child
+	    for i from 0 below 100
+	    for child = (make-element (format nil "e~D" i))
+	    do (append-child parent child))
       (assert-node= top (copy top))
       (values)))
 
@@ -2013,14 +2013,13 @@
 
 (deftest element.base-uri
     (let* ((root (make-element "root"))
-	   (child (make-element "child"))
-	   (document (make-document root)))
+           (child (make-element "child"))
+           (document (make-document root)))
       (append-child root child)
       (assert-equal (base-uri document) "")
       (setf (base-uri root) "file://etc")
       (setf (base-uri child) "passwd")
-      (assert (puri:uri= (puri:parse-uri "file://etc/passwd")
-			 (base-uri child)))
+      (assert (string= "file://etc/passwd" (base-uri child)))
       (values)))
 
 (deftest element.root
