@@ -12,33 +12,32 @@
       (call-next-method))))
 
 (defsystem "cxml-stp"
-    :default-component-class closure-source-file
-    :serial t
-    :components
-    ((:file "package")
-     (:file "classes")
-     (:file "node")
-     (:file "parent-node")
-     (:file "leaf-node")
-     (:file "document")
-     (:file "element")
-     (:file "attribute")
-     (:file "document-type")
-     (:file "comment")
-     (:file "processing-instruction")
-     (:file "text")
-     (:file "builder")
-     (:file "xpath"))
-    :depends-on ("cxml" "alexandria" "xpath")
-    :in-order-to ((test-op (test-op "cxml-stp/test"))))
+  :depends-on ("cxml" "alexandria" "xpath")
+  :default-component-class closure-source-file
+  :serial t
+  :components ((:file "package")
+               (:file "classes")
+               (:file "node")
+               (:file "parent-node")
+               (:file "leaf-node")
+               (:file "document")
+               (:file "element")
+               (:file "attribute")
+               (:file "document-type")
+               (:file "comment")
+               (:file "processing-instruction")
+               (:file "text")
+               (:file "builder")
+               (:file "xpath"))
+  :in-order-to ((test-op (test-op "cxml-stp/test"))))
 
 (defsystem "cxml-stp/test"
-    :default-component-class closure-source-file
-    :serial t
-    :components ((:module "test"
-                  :components ((:file "test")
-                               (:file "xpath"))))
-    :depends-on ("cxml-stp" "rt" "xpath/test")
-    :perform (test-op (operation component)
-               (uiop:symbol-call '#:cxml-stp-test '#:do-tests)
-               (uiop:symbol-call '#:cxml-stp-test '#:run-xpath-tests)))
+  :depends-on ("cxml-stp" "rt" "cxml/test" "xpath/test")
+  :default-component-class closure-source-file
+  :serial t
+  :components ((:module "test"
+                :components ((:file "test")
+                             (:file "xpath"))))
+  :perform (test-op (operation component)
+             (uiop:symbol-call '#:cxml-stp-test '#:do-tests)
+             (uiop:symbol-call '#:cxml-stp-test '#:run-xpath-tests)))
