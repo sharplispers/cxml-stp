@@ -186,27 +186,25 @@
 
 (deftest text.serialize
     (let ((text (make-text "name"))
-	  (pairs '("Hello"
-		   "hello there"
-		   "  spaces on both ends  "
-		   ;; zzz CXML traditionally escapes quotes without good
-		   ;; reason:
-		   (" quotes \" \" quotes"
-		    " quotes &quot; &quot; quotes")
-		   (" both double and single \"\'\"\' quotes"
-		    " both double and single &quot;\'&quot;\' quotes")
-		   " single \'\' quotes"
-		   ("<>" "&lt;&gt;")
-		   ("&amp;" "&amp;amp;")
-		   ("]]>" "]]&gt;")
-		   (#.(string (code-char 13)) "&#13;")
-		   "=,.!@#$%^*()_-'[]{}+/?;:`|\\")))
+          (pairs '("Hello"
+                   "hello there"
+                   "  spaces on both ends  "
+                   (" quotes \" \" quotes"
+                    " quotes \" \" quotes")
+                   (" both double and single \"\'\"\' quotes"
+                    " both double and single \"\'\"\' quotes")
+                   " single \'\' quotes"
+                   ("<>" "&lt;&gt;")
+                   ("&amp;" "&amp;amp;")
+                   ("]]>" "]]&gt;")
+                   (#.(string (code-char 13)) "&#13;")
+                   "=,.!@#$%^*()_-'[]{}+/?;:`|\\")))
       (loop
-	 for (in out) in (mapcar (lambda (x) (if (listp x) x (list x x)))
-				 pairs)
-	 do
-	   (setf (data text) in)
-	   (assert-equal (serialize-to-string text) out))
+         for (in out) in (mapcar (lambda (x) (if (listp x) x (list x x)))
+                                 pairs)
+         do
+           (setf (data text) in)
+           (assert-equal (serialize-to-string text) out))
       (values)))
 
 (deftest text.copy
